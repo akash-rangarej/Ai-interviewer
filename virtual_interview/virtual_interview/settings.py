@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
-ALLOWED_HOSTS = ['ai-interviewer.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ai-interviewer-amrj.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
