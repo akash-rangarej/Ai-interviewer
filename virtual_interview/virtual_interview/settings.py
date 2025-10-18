@@ -30,10 +30,10 @@ DEBUG = os.getenv('DEBUG') == 'True'
 # Optional: OpenAI key available to your views
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ai-interviewer.onrender.com']
 
 
 # Application definition
@@ -82,12 +82,6 @@ WSGI_APPLICATION = 'virtual_interview.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
