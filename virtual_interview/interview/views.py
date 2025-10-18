@@ -1,5 +1,5 @@
 import os
-import openai
+from openai import OpenAI
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -8,8 +8,8 @@ from PyPDF2 import PdfReader
 import logging
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-# Set your OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Initialize OpenAI client with API key
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @ensure_csrf_cookie
 def interview_page(request):
@@ -51,13 +51,14 @@ def analyze_resume_and_generate_questions(interview_type, resume_text, skills, i
         Format: Return only the questions, one per line, without any numbering or bullet points.
         """
         
-        response = openai.ChatCompletion.create(
+        # Updated OpenAI API call
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=500
         )
 
-        questions_text = response['choices'][0]['message']['content']
+        questions_text = response.choices[0].message.content
         # Split by new lines and clean up
         questions_list = [q.strip() for q in questions_text.split('\n') if q.strip()]
         
@@ -151,13 +152,14 @@ def generate_feedback(request):
             Format your response as a clear, structured analysis.
             """
             
-            response = openai.ChatCompletion.create(
+            # Updated OpenAI API call
+            response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=800
             )
 
-            feedback_text = response['choices'][0]['message']['content']
+            feedback_text = response.choices[0].message.content
             # Split into paragraphs for better display
             feedback_list = [p.strip() for p in feedback_text.split('\n') if p.strip()]
 
