@@ -1,9 +1,7 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="{% static 'interview/favicon.ico' %}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -334,6 +332,30 @@
             animation: loadingTextPulse 1.5s infinite;
         }
 
+        .skill-tag {
+            display: inline-block;
+            background: #4a6cf7;
+            color: white;
+            padding: 5px 12px;
+            margin: 2px 5px 2px 0;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .remove {
+            cursor: pointer;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .skills-container, .interests-container {
+            margin-top: 10px;
+            min-height: 40px;
+            border: 1px dashed #ddd;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
         @keyframes pulse-ring {
             0% {
                 transform: scale(0.3);
@@ -360,6 +382,252 @@
         @keyframes loadingTextPulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.7; transform: scale(0.97); }
+        }
+
+        /* ========== RESPONSIVE DESIGN IMPROVEMENTS ========== */
+        
+        /* Tablet Styles (768px to 1024px) */
+        @media (max-width: 1024px) {
+            h1 {
+                font-size: 2.2em;
+                margin-bottom: 30px;
+            }
+            
+            form {
+                padding: 30px;
+                width: 85%;
+            }
+            
+            #currentQuestion {
+                font-size: 1.8em;
+                padding: 30px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .loading-spinner {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .loading-text {
+                font-size: 1.2em;
+            }
+        }
+
+        /* Mobile Styles (480px to 768px) */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 25px;
+            }
+            
+            form {
+                padding: 20px;
+                width: 90%;
+                gap: 15px;
+            }
+            
+            #questionContainer {
+                padding: 20px;
+            }
+            
+            #currentQuestion {
+                font-size: 1.5em;
+                padding: 20px;
+                margin-bottom: 30px;
+            }
+            
+            #feedbackBox {
+                padding: 30px 20px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            
+            .loading-spinner {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .loading-text {
+                font-size: 1.1em;
+                margin-top: 20px;
+            }
+            
+            .skills-container, .interests-container {
+                min-height: 35px;
+                padding: 8px;
+            }
+        }
+
+        /* Small Mobile Styles (below 480px) */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+            
+            form {
+                padding: 15px;
+                width: 95%;
+                gap: 12px;
+            }
+            
+            label {
+                font-size: 14px;
+            }
+            
+            select, input[type="file"], input[type="text"], input[type="email"] {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            #questionContainer {
+                padding: 15px;
+            }
+            
+            #currentQuestion {
+                font-size: 1.3em;
+                padding: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .stats-container {
+                margin: 20px 0;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .feedback-content p {
+                font-size: 1em;
+                padding: 12px;
+            }
+            
+            button {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+            
+            .skill-tag {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
+            
+            .loading-spinner {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .loading-text {
+                font-size: 1em;
+            }
+        }
+
+        /* Extra Small Mobile Styles (below 360px) */
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1.3em;
+            }
+            
+            form {
+                padding: 12px;
+                border-radius: 15px;
+            }
+            
+            #currentQuestion {
+                font-size: 1.1em;
+                padding: 12px;
+            }
+            
+            .stat-card {
+                padding: 12px;
+                border-radius: 15px;
+            }
+            
+            button {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+
+        /* Special handling for landscape mode on mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .content-wrapper {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+            
+            form {
+                padding: 15px;
+            }
+            
+            #questionContainer {
+                padding: 15px;
+            }
+            
+            #currentQuestion {
+                font-size: 1.3em;
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .loading-spinner {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .loading-text {
+                margin-top: 15px;
+                font-size: 1em;
+            }
+        }
+
+        /* Ensure buttons are always accessible */
+        button {
+            min-height: 44px; /* Minimum touch target size */
+        }
+
+        /* Improve readability on smaller screens */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+        }
+
+        /* Handle very high resolution screens */
+        @media (min-width: 1400px) {
+            .content-wrapper {
+                max-width: 1300px;
+            }
+            
+            form {
+                max-width: 900px;
+            }
+            
+            #currentQuestion {
+                max-width: 900px;
+            }
         }
     </style>
 </head>
@@ -451,255 +719,289 @@
     </div>
 
     <script>
-        // Your existing JavaScript plus new functionality
-        let questions = [];
-        let currentQuestionIndex = 0;
-        let recognition;
-        let userResponses = {};
+       // Your existing JavaScript plus new functionality
+let questions = [];
+let currentQuestionIndex = 0;
+let recognition;
+let userResponses = {};
 
-        $(document).ready(function() {
-            // Handle skills and interests input
-            function addTag(value, container, hiddenInput) {
-                if (value.trim()) {
-                    const tag = $(`
+$(document).ready(function() {
+    // Handle skills and interests input
+    function addTag(value, container, hiddenInput) {
+        if (value.trim()) {
+            const tag = $(`
+                <div class="skill-tag" style="display: inline-block; background: #4a6cf7; color: white; padding: 5px 10px; margin: 2px; border-radius: 15px;">
+                    ${value}
+                    <span class="remove" style="cursor: pointer; margin-left: 5px;">&times;</span>
+                </div>
+            `);
+            container.append(tag);
+            updateHiddenInput(container, hiddenInput);
+        }
+    }
 
-                        <div class="skill-tag">
-                            ${value}
-                            <span class="remove">&times;</span>
-                        </div>
-                    `);
-                    container.append(tag);
-                    updateHiddenInput(container, hiddenInput);
-                }
-            }
-
-            function updateHiddenInput(container, hiddenInput) {
-                const values = [];
-                container.find('.skill-tag').each(function() {
-                    values.push($(this).text().trim());
-                });
-                hiddenInput.val(values.join(','));
-            }
-
-            // Skills input handling
-            $('#skillInput').on('keypress', function(e) {
-                if (e.which === 13) {
-                    e.preventDefault();
-                    addTag($(this).val(), $('.skills-container'), $('#skills'));
-                    $(this).val('');
-                }
-            });
-
-            // Interests input handling
-            $('#interestInput').on('keypress', function(e) {
-                if (e.which === 13) {
-                    e.preventDefault();
-                    addTag($(this).val(), $('.interests-container'), $('#interests'));
-                    $(this).val('');
-                }
-            });
-
-            // Remove tags
-            $(document).on('click', '.remove', function() {
-                $(this).parent().remove();
-                updateHiddenInput($('.skills-container'), $('#skills'));
-                updateHiddenInput($('.interests-container'), $('#interests'));
-            });
-
-            // Form validation and submission
-            $('#resumeForm').on('submit', function(event) {
-                event.preventDefault();
-                if (validateForm()) {
-                    $(this).addClass('hidden');
-                    $('.loading-container').fadeIn();
-                    
-                    var formData = new FormData(this);
-                    
-                    $.ajax({
-                        url: '/submit/',
-                        type: 'POST',
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function(response) {
-                            $('.loading-container').fadeOut();
-                            if (response.status === 'success') {
-                                questions = response.questions;
-                                currentQuestionIndex = 0;
-                                $('#questionContainer').fadeIn();
-                                displayQuestion();
-                            } else {
-                                alert('Error: ' + response.message);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            $('.loading-container').fadeOut();
-                            alert('An error occurred: ' + error);
-                        }
-                    });
-                }
-            });
-
-            // Your existing event handlers
-            $('#startVoiceInput').on('click', startVoiceRecognition);
-            $('#retryResponse').on('click', startVoiceRecognition);
-            $('#confirmResponse').on('click', handleConfirmResponse);
+    function updateHiddenInput(container, hiddenInput) {
+        const values = [];
+        container.find('.skill-tag').each(function() {
+            values.push($(this).contents().filter(function() {
+                return this.nodeType === 3; // Text nodes only
+            }).text().trim());
         });
+        hiddenInput.val(values.join(','));
+    }
 
-        function validateForm() {
-            let isValid = true;
-            $('.error-message').hide();
-
-            // Validate name
-            if (!$('#name').val().trim()) {
-                $('#name').next('.error-message').show();
-                isValid = false;
-            }
-
-            // Validate email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test($('#email').val())) {
-                $('#email').next('.error-message').show();
-                isValid = false;
-            }
-
-            // Validate skills
-            if ($('.skills-container').children().length === 0) {
-                $('#skillInput').siblings('.error-message').show();
-                isValid = false;
-            }
-
-            // Validate interests
-            if ($('.interests-container').children().length === 0) {
-                $('#interestInput').siblings('.error-message').show();
-                isValid = false;
-            }
-
-            // Validate interview type
-            if (!$('#interviewType').val()) {
-                $('#interviewType').next('.error-message').show();
-                isValid = false;
-            }
-
-            // Validate resume
-            if (!$('#resume')[0].files[0]) {
-                $('#resume').next('.error-message').show();
-                isValid = false;
-            }
-
-            return isValid;
+    // Skills input handling
+    $('#skillInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            addTag($(this).val(), $('.skills-container'), $('#skills'));
+            $(this).val('');
         }
+    });
 
-        // Your existing functions
-        function displayQuestion() {
-            $('#currentQuestion').text(questions[currentQuestionIndex]);
-            speakQuestion(questions[currentQuestionIndex]);
-            $('#nextQuestion').show();
-            $('#responseContainer').hide();
+    // Interests input handling
+    $('#interestInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            addTag($(this).val(), $('.interests-container'), $('#interests'));
+            $(this).val('');
         }
+    });
 
-        function speakQuestion(question) {
-            const utterance = new SpeechSynthesisUtterance(question);
-            utterance.lang = 'en-US';
-            window.speechSynthesis.speak(utterance);
-        }
+    // Remove tags
+    $(document).on('click', '.remove', function() {
+        $(this).parent().remove();
+        updateHiddenInput($('.skills-container'), $('#skills'));
+        updateHiddenInput($('.interests-container'), $('#interests'));
+    });
 
-        function startVoiceRecognition() {
-            if (!('webkitSpeechRecognition' in window)) {
-                alert("Your browser does not support speech recognition. Please try Google Chrome.");
-                return;
-            }
-
-            recognition = new webkitSpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.start();
-
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                $('#recognizedText').text(transcript);
-                $('#responseContainer').show();
-            };
-
-            recognition.onerror = function(event) {
-                console.error('Speech recognition error detected: ' + event.error);
-                alert('Error occurred in recognition: ' + event.error);
-            };
-        }
-
-        function handleConfirmResponse() {
-            const responseText = $('#recognizedText').text();
-            const currentQuestion = questions[currentQuestionIndex];
-            userResponses[currentQuestion] = responseText;
+    // Form validation and submission
+    $('#resumeForm').on('submit', function(event) {
+        event.preventDefault();
+        console.log('Form submitted');
+        
+        if (validateForm()) {
+            $(this).addClass('hidden');
+            $('.loading-container').show();
             
-            $('#responseContainer').hide();
-            $('#recognizedText').text('');
+            var formData = new FormData(this);
             
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                displayQuestion();
-            } else {
-                generateFeedback();
-            }
-        }
-
-        function generateFeedback() {
             $.ajax({
-                url: '/generate-feedback/',
+                url: '/submit/',
                 type: 'POST',
-                data: JSON.stringify({ responses: userResponses }),
-                contentType: 'application/json',
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+                },
                 success: function(response) {
+                    console.log('Response received:', response);
+                    $('.loading-container').hide();
                     if (response.status === 'success') {
-                        displayFeedback(response.feedback);
+                        questions = response.questions;
+                        currentQuestionIndex = 0;
+                        $('#questionContainer').addClass('active');
+                        displayQuestion();
                     } else {
-                        alert('Error generating feedback: ' + response.message);
+                        alert('Error: ' + response.message);
+                        $('#resumeForm').removeClass('hidden');
                     }
                 },
                 error: function(xhr, status, error) {
-                    alert('An error occurred while generating feedback: ' + error);
+                    console.error('AJAX Error:', error);
+                    $('.loading-container').hide();
+                    alert('An error occurred: ' + error);
+                    $('#resumeForm').removeClass('hidden');
                 }
             });
         }
+    });
 
-        function displayFeedback(feedback) {
-            $('#questionContainer').fadeOut();
-            
-            const feedbackBox = $('#feedbackBox');
-            feedbackBox.find('.feedback-content').empty();
-            
-            feedback.forEach(item => {
-                feedbackBox.find('.feedback-content').append(`<p>${item}</p>`);
-            });
-
-            // Create skills chart
-            const ctx = document.getElementById('skillsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['Communication', 'Technical Knowledge', 'Problem Solving', 'Confidence', 'Overall'],
-                    datasets: [{
-                        label: 'Performance',
-                        data: [85, 90, 75, 80, 85],
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        pointBackgroundColor: 'rgba(54, 162, 235, 1)'
-                    }]
-                },
-                options: {
-                    scale: {
-                        ticks: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
-
-            feedbackBox.addClass('active');
+    // Voice recognition handlers
+    $('#startVoiceInput').on('click', startVoiceRecognition);
+    $('#retryResponse').on('click', startVoiceRecognition);
+    $('#confirmResponse').on('click', handleConfirmResponse);
+    
+    // Next question handler
+    $('#nextQuestion').on('click', function() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            displayQuestion();
+        } else {
+            generateFeedback();
         }
+    });
+});
+
+function validateForm() {
+    let isValid = true;
+    $('.error-message').hide();
+
+    // Validate name
+    if (!$('#name').val().trim()) {
+        $('#name').next('.error-message').show();
+        isValid = false;
+    }
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test($('#email').val())) {
+        $('#email').next('.error-message').show();
+        isValid = false;
+    }
+
+    // Validate skills
+    if ($('.skills-container').children().length === 0) {
+        $('#skillInput').siblings('.error-message').show();
+        isValid = false;
+    }
+
+    // Validate interests
+    if ($('.interests-container').children().length === 0) {
+        $('#interestInput').siblings('.error-message').show();
+        isValid = false;
+    }
+
+    // Validate interview type
+    if (!$('#interviewType').val()) {
+        $('#interviewType').next('.error-message').show();
+        isValid = false;
+    }
+
+    // Validate resume
+    if (!$('#resume')[0].files[0]) {
+        $('#resume').next('.error-message').show();
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function displayQuestion() {
+    if (currentQuestionIndex < questions.length) {
+        $('#currentQuestion').text(questions[currentQuestionIndex]);
+        speakQuestion(questions[currentQuestionIndex]);
+        $('#nextQuestion').hide();
+        $('#responseContainer').hide();
+        $('#startVoiceInput').show();
+    }
+}
+
+function speakQuestion(question) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(question);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function startVoiceRecognition() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Your browser does not support speech recognition. Please try Google Chrome.");
+        return;
+    }
+
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    recognition.start();
+    $('#startVoiceInput').text('Listening...').prop('disabled', true);
+
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        $('#recognizedText').text(transcript);
+        $('#responseContainer').show();
+        $('#startVoiceInput').text('Speak Your Answer').prop('disabled', false);
+    };
+
+    recognition.onerror = function(event) {
+        console.error('Speech recognition error:', event.error);
+        alert('Error occurred in recognition: ' + event.error);
+        $('#startVoiceInput').text('Speak Your Answer').prop('disabled', false);
+    };
+
+    recognition.onend = function() {
+        $('#startVoiceInput').text('Speak Your Answer').prop('disabled', false);
+    };
+}
+
+function handleConfirmResponse() {
+    const responseText = $('#recognizedText').text();
+    const currentQuestion = questions[currentQuestionIndex];
+    userResponses[currentQuestion] = responseText;
+    
+    $('#responseContainer').hide();
+    $('#recognizedText').text('');
+    $('#nextQuestion').show();
+    $('#startVoiceInput').hide();
+}
+
+function generateFeedback() {
+    $('.loading-container').show();
+    $('#questionContainer').removeClass('active');
+    
+    $.ajax({
+        url: '/generate-feedback/',
+        type: 'POST',
+        data: JSON.stringify({ responses: userResponses }),
+        contentType: 'application/json',
+        headers: {
+            'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+        },
+        success: function(response) {
+            $('.loading-container').hide();
+            if (response.status === 'success') {
+                displayFeedback(response.feedback);
+            } else {
+                alert('Error generating feedback: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            $('.loading-container').hide();
+            alert('An error occurred while generating feedback: ' + error);
+        }
+    });
+}
+
+function displayFeedback(feedback) {
+    const feedbackBox = $('#feedbackBox');
+    const feedbackContent = feedbackBox.find('.feedback-content');
+    feedbackContent.empty();
+    
+    feedback.forEach(item => {
+        feedbackContent.append(`<p>${item}</p>`);
+    });
+
+    // Create skills chart
+    const ctx = document.getElementById('skillsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Communication', 'Technical Knowledge', 'Problem Solving', 'Confidence', 'Overall'],
+            datasets: [{
+                label: 'Performance',
+                data: [85, 90, 75, 80, 85],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                pointBackgroundColor: 'rgba(54, 162, 235, 1)'
+            }]
+        },
+        options: {
+            scale: {
+                ticks: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    feedbackBox.addClass('active');
+}
     </script>
 </body>
 </html>

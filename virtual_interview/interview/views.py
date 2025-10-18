@@ -4,127 +4,162 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import JsonResponse
-from PyPDF2 import PdfReader  # For PDF files
-from gtts import gTTS
+from PyPDF2 import PdfReader
 import logging
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 # Set your OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+@ensure_csrf_cookie
 def interview_page(request):
     """Render the interview page."""
-    return render(request, 'interview/interview.html')  # Ensure this template exists
+    return render(request, 'interview/interview.html')
 
 def extract_text_from_resume(resume):
     """Extract text from the uploaded resume file."""
-    if resume.name.endswith('.pdf'):
-        reader = PdfReader(resume)
-        text = ''
-        for page in reader.pages:
-            text += page.extract_text() or ''  # Handle None case
-        return text
-    else:
-        return None  # Unsupported file type
+    try:
+        if resume.name.endswith('.pdf'):
+            reader = PdfReader(resume)
+            text = ''
+            for page in reader.pages:
+                text += page.extract_text() or ''
+            return text
+        else:
+            return None
+    except Exception as e:
+        logging.error(f"Error extracting text from resume: {str(e)}")
+        return None
 
-def analyze_resume_and_generate_questions(interview_type, resume_text):
-    prompt = f"""
-    Analyze the following resume text and determine the type of interview based on the content. 
-    Generate relevant interview questions without mentioning numbers before questions specifically for a {interview_type} interview, including some external questions related to the interview type and a few problem-solving questions. 
-    Ensure that all questions are presented in a single list without any separation. and replace the numbers at starting of the question by empty space
-   only 5 questions
-    Resume Text:
-    {resume_text}
+def analyze_resume_and_generate_questions(interview_type, resume_text, skills, interests):
+    """Generate interview questions based on resume, skills, and interests."""
+    try:
+        prompt = f"""
+        Analyze the following candidate information and generate exactly 5 relevant interview questions for a {interview_type} interview.
+        
+        Resume Content:
+        {resume_text[:3000]}  # Limit resume text to avoid token limits
+        
+        Skills: {skills}
+        Interests: {interests}
+        
+        Generate exactly 5 questions that are:
+        1. Relevant to the interview type: {interview_type}
+        2. Based on the resume content
+        3. Appropriate for the skills and interests mentioned
+        
+        Format: Return only the questions, one per line, without any numbering or bullet points.
+        """
+        
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=500
+        )
 
-    Please provide single list of questions.
-    """
+        questions_text = response['choices'][0]['message']['content']
+        # Split by new lines and clean up
+        questions_list = [q.strip() for q in questions_text.split('\n') if q.strip()]
+        
+        # Ensure we have exactly 5 questions
+        if len(questions_list) > 5:
+            questions_list = questions_list[:5]
+        elif len(questions_list) < 5:
+            # If we got fewer than 5, add some generic ones
+            default_questions = [
+                "Tell me about yourself and your background.",
+                "What are your greatest strengths?",
+                "How do you handle challenges in the workplace?",
+                "Where do you see yourself in 5 years?",
+                "Why are you interested in this position?"
+            ]
+            questions_list.extend(default_questions[:5-len(questions_list)])
+        
+        return questions_list
+        
+    except Exception as e:
+        logging.error(f"Error generating questions: {str(e)}")
+        # Return default questions if OpenAI fails
+        return [
+            "Tell me about yourself and your background.",
+            "What are your greatest strengths?",
+            "How do you handle challenges in the workplace?",
+            "Where do you see yourself in 5 years?",
+            "Why are you interested in this position?"
+        ]
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    # Assuming the response is a string of questions separated by new lines
-    questions_text = response['choices'][0]['message']['content']
-    questions_list = questions_text.split('\n')  # Split into a list
-    # questions_extendedlist = questions_list[(questions_list.index("problem solving questions")):]
-    # final_question_list = questions_list[4:questions_list[questions_list.index("problem solving questions")-1]] + questions_extendedlist
-    return questions_list[1:]
-
-
+@csrf_exempt
 def process_user_response(request):
     """Process the user's response containing the interview type and resume."""
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': 'Invalid request method. Only POST is allowed.'})
 
-    interview_type = request.POST.get('interviewType')
-    resume = request.FILES.get('resume')
-
-    # Validate input
-    if not interview_type:
-        return JsonResponse({'status': 'error', 'message': 'Interview type is required.'})
-    if not resume:
-        return JsonResponse({'status': 'error', 'message': 'Resume file is required.'})
-
-    # Extract text from the resume
-    resume_text = extract_text_from_resume(resume)
-    if resume_text is None:
-        return JsonResponse({'status': 'error', 'message': 'Unsupported file type. Please upload a PDF.'})
-
     try:
-        # Call OpenAI to generate questions
-        questions = analyze_resume_and_generate_questions(interview_type, resume_text)
+        interview_type = request.POST.get('interviewType')
+        resume = request.FILES.get('resume')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        skills = request.POST.get('skills', '')
+        interests = request.POST.get('interests', '')
 
-        # Check if questions were generated
-        if not questions:
-            return JsonResponse({'status': 'error', 'message': 'No questions generated. Please check the resume content.'})
+        # Validate input
+        if not interview_type:
+            return JsonResponse({'status': 'error', 'message': 'Interview type is required.'})
+        if not resume:
+            return JsonResponse({'status': 'error', 'message': 'Resume file is required.'})
 
-        # Generate voice output for the questions
-        questions_text = "\n".join(questions)  # Join questions into a single string
-        audio_file_path = './questions.mp3'  # Path to save the audio file
-        
-        try:
-            tts = gTTS(text=questions_text, lang='en')
-            tts.save(audio_file_path)
-        except Exception as tts_error:
-            logging.error(f"Error generating audio file: {str(tts_error)}", exc_info=True)
-            return JsonResponse({'status': 'error', 'message': 'An error occurred while generating audio. Please try again later.'})
+        # Extract text from the resume
+        resume_text = extract_text_from_resume(resume)
+        if resume_text is None:
+            return JsonResponse({'status': 'error', 'message': 'Unsupported file type or error reading PDF.'})
 
-        # Return the generated questions and the audio file path
+        # Generate questions
+        questions = analyze_resume_and_generate_questions(interview_type, resume_text, skills, interests)
+
         return JsonResponse({
             'status': 'success',
             'questions': questions,
-            'audio_file': audio_file_path  # Return the path to the audio file
+            'message': f'Generated {len(questions)} questions for {interview_type} interview'
         })
 
     except Exception as e:
-        # Log the exception for debugging purposes
-        logging.error(f"Error processing user response: {str(e)}", exc_info=True)
-        return JsonResponse({'status': 'error', 'message': 'An error occurred while processing your request. Please try again later.'})
-
+        logging.error(f"Error in process_user_response: {str(e)}")
+        return JsonResponse({'status': 'error', 'message': f'An error occurred: {str(e)}'})
 
 @csrf_exempt
 def generate_feedback(request):
+    """Generate feedback based on user responses."""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            user_responses = data.get('responses', [])
-
-            # Generate feedback using OpenAI
-            prompt = f"""Provide genuine feedback on the following interview responses:\n{user_responses}\n describe the user's abilities based on {user_responses} for 
-            example 
-            communication skills : out of 100%
-             problem solving skills : out of 100%
-            technical skills : out of 100% 
-            and rate these skills genuinely which means very srtictly consider each and every terms and then rate out of 100%
-            improvement areas:
-            atlast describe what needs to be improve"""
-
+            user_responses = data.get('responses', {})
+            
+            # Create a formatted string of responses for the prompt
+            responses_text = "\n".join([f"Q: {q}\nA: {a}" for q, a in user_responses.items()])
+            
+            prompt = f"""
+            Based on the following interview responses, provide constructive feedback:
+            
+            {responses_text}
+            
+            Please provide:
+            1. Overall assessment
+            2. Strengths
+            3. Areas for improvement
+            4. Specific suggestions
+            
+            Format your response as a clear, structured analysis.
+            """
+            
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}]
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=800
             )
 
             feedback_text = response['choices'][0]['message']['content']
-            feedback_list = feedback_text.split('\n')  # Split feedback into a list
+            # Split into paragraphs for better display
+            feedback_list = [p.strip() for p in feedback_text.split('\n') if p.strip()]
 
             return JsonResponse({
                 'status': 'success',
@@ -132,6 +167,7 @@ def generate_feedback(request):
             })
 
         except Exception as e:
+            logging.error(f"Error generating feedback: {str(e)}")
             return JsonResponse({'status': 'error', 'message': str(e)})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
